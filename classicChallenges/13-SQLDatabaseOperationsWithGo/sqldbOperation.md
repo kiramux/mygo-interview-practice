@@ -157,6 +157,7 @@ func (ps *ProductStore) UpdateProduct(product *Product) error {
 
 <details>
 <summary>点击展开详细说明</summary>
+
 ### 1. **验证操作是否真正执行**
 
 #### UPDATE 场景
