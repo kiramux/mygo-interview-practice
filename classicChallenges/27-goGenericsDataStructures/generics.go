@@ -191,10 +191,14 @@ func (s *Set[T]) Elements() []T {
 
 // Union returns a new set containing all elements from both sets
 func Union[T comparable](s1, s2 *Set[T]) *Set[T] {
+	result := NewSet[T]()
 	for key := range s1.elements {
-		s2.Add(key)
+		result.Add(key)
 	}
-	return s2
+	for key := range s2.elements {
+		result.Add(key)
+	}
+	return result
 }
 
 // Intersection returns a new set containing only elements that exist in both sets
@@ -276,9 +280,11 @@ func FindIndex[T comparable](slice []T, element T) int {
 
 // RemoveDuplicates returns a new slice with duplicate elements removed, preserving order
 func RemoveDuplicates[T comparable](slice []T) []T {
+	seen := make(map[T]struct{}, len(slice))
 	result := []T{}
 	for _, v := range slice {
-		if !Contains(result, v) {
+		if _, ok := seen[v]; !ok {
+			seen[v] = struct{}{}
 			result = append(result, v)
 		}
 	}
