@@ -63,6 +63,7 @@ func (s *Stack[T]) Pop() (T, error) {
 	}
 	last := s.Size() - 1
 	e := s.elements[last]
+	s.elements[last] = zero
 	s.elements = s.elements[:last]
 	return e, nil
 }
@@ -118,6 +119,7 @@ func (q *Queue[T]) Dequeue() (T, error) {
 		return zero, ErrEmptyCollection
 	}
 	frontEl := q.elements[0]
+	q.elements[0] = zero
 	q.elements = q.elements[1:]
 	return frontEl, nil
 }
