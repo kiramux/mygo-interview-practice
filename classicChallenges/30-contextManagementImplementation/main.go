@@ -65,11 +65,7 @@ func (cm *simpleContextManager) GetValue(ctx context.Context, key interface{}) (
 	// Hint: Use ctx.Value(key) and check if it's nil
 	value := ctx.Value(key)
 	// Return the value and a boolean indicating if it was found
-	if value != nil {
-		return value, true
-	} else {
-		return nil, false
-	}
+	return value, value != nil
 }
 
 // ExecuteWithContext executes a task that can be cancelled via context
