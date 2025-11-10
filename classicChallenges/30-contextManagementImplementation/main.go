@@ -145,14 +145,14 @@ func main() {
 	fmt.Println("Implement the context manager methods!")
 
 	// Example of how the context manager should work:
-	cm := NewContextManager()
+	// cm := NewContextManager()
 
 	// Create a cancellable context
-	ctx, cancel := cm.CreateCancellableContext(context.Background())
-	defer cancel()
+	// ctx, cancel := cm.CreateCancellableContext(context.Background())
+	// defer cancel()
 
 	// Add some values
-	ctx = cm.AddValue(ctx, "user", "alice")
+	// ctx = cm.AddValue(ctx, "user", "alice")
 	// ctx = cm.AddValue(ctx, "requestID", "12345")
 
 	// Use the context
