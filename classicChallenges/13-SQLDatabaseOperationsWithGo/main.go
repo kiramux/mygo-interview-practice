@@ -101,6 +101,7 @@ func (ps *ProductStore) UpdateProduct(product *Product) error {
 		return err
 	}
 	if rowsAffected == 0 {
+		// 找不到 row 时不会报错，需要创建一个新的自定义错误
 		return fmt.Errorf("product with ID %d not found", product.ID)
 	}
 	return nil
