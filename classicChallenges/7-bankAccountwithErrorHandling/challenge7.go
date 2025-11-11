@@ -75,7 +75,7 @@ func (e *ExceedsLimitError) Error() string {
 func NewBankAccount(id, owner string, initialBalance, minBalance float64) (*BankAccount, error) {
 	// Determine the validity of the parameters.
 
-	// 验证 accountID
+	// Validate accountID
 	if id == "" {
 		return nil, &AccountError{
 			Code:      "INVALID_ACCOUNT_ID",
@@ -84,7 +84,7 @@ func NewBankAccount(id, owner string, initialBalance, minBalance float64) (*Bank
 		}
 	}
 
-	// 验证 owner
+	// Validate owner
 	if owner == "" {
 		return nil, &AccountError{
 			Code:      "INVALID_OWNER",
@@ -93,7 +93,7 @@ func NewBankAccount(id, owner string, initialBalance, minBalance float64) (*Bank
 		}
 	}
 
-	// 验证 initialBalance
+	// Validate initial balance
 	if initialBalance < 0 {
 		return nil, &NegativeAmountError{
 			Code:    "INVALID_INITIAL_BALANCE",
@@ -102,16 +102,16 @@ func NewBankAccount(id, owner string, initialBalance, minBalance float64) (*Bank
 		}
 	}
 
-	// 验证 minBalance
+	// Validate minimum balance
 	if minBalance < 0 {
 		return nil, &NegativeAmountError{
-			Code:    "INVALID_INITIAL_BALANCE",
+			Code:    "INVALID_MIN_BALANCE",
 			Message: "min balance cannot be negative",
 			Amount:  minBalance,
 		}
 	}
 
-	// 比较 initialBalance 和 minBalance
+	// Compare initial balance and minimum balance
 	if initialBalance < minBalance {
 		return nil, &InsufficientFundsError{
 			Code:       "INSUFFICIENT_FUND",
@@ -175,7 +175,7 @@ func (a *BankAccount) Withdraw(amount float64) error {
 	remain := a.Balance - amount
 	if remain < a.MinBalance {
 		return &InsufficientFundsError{
-			Code:       "INVALID_WITHDRAW_AMOUNT",
+			Code:       "INSUFFICIENT_FUNDS",
 			Message:    "account balance cannot be less than min amount",
 			MinBalance: a.MinBalance,
 		}
@@ -202,7 +202,7 @@ func (a *BankAccount) Transfer(amount float64, target *BankAccount) error {
 		}
 	}
 
-	// check targer account is valid or not
+	// check target account is valid or not
 	switch target {
 	case nil:
 		return &AccountError{
@@ -226,6 +226,13 @@ func (a *BankAccount) Transfer(amount float64, target *BankAccount) error {
 	} else if a.ID > target.ID {
 		first = target
 		second = a
+	} else {
+		// a.ID == target.ID but a != target (duplicate IDs)
+		return &AccountError{
+			Code:      "DUPLICATE_ACCOUNT_ID",
+			Message:   "source and target accounts have duplicate IDs",
+			AccountID: a.ID,
+		}
 	}
 
 	first.mu.Lock()
@@ -236,7 +243,7 @@ func (a *BankAccount) Transfer(amount float64, target *BankAccount) error {
 	remain := a.Balance - amount
 	if remain < a.MinBalance {
 		return &InsufficientFundsError{
-			Code:       "INVALID_TRANSFER_AMOUNT",
+			Code:       "INSUFFICIENT_FUNDS",
 			Message:    "account balance cannot be less than min amount",
 			MinBalance: a.MinBalance,
 		}
